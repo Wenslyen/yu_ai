@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>yu_ai · Java → AI Agent 学习项目</title>
+    <style>
+        body { font-family: -apple-system, "PingFang SC", sans-serif; max-width: 880px; margin: 40px auto; padding: 0 20px; color: #222; line-height: 1.65; }
+        h1 { border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
+        .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; margin: 14px 0; background: #fafafa; }
+        .card h3 { margin: 0 0 8px 0; color: #2563eb; }
+        .card .desc { color: #555; font-size: 14px; margin-bottom: 10px; }
+        .card a { display: inline-block; margin: 4px 8px 4px 0; padding: 4px 10px; background: #2563eb; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; font-family: ui-monospace, Menlo, monospace; }
+        .card a:hover { background: #1d4ed8; }
+        .badge { display: inline-block; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 8px; }
+    </style>
+</head>
+<body>
+<h1>yu_ai · Java → AI Agent 学习项目</h1>
+<p>基于 Spring AI + DeepSeek 的 8 个递进学习模块。点击下面的链接即可触发对应接口。</p>
+
+<div class="card">
+    <h3>模块 1 · 基础对话 <span class="badge">入门</span></h3>
+    <div class="desc">ChatClient 同步 / 流式调用，类比 RestTemplate。</div>
+    <a href="/m1/chat?message=你是谁">/m1/chat</a>
+    <a href="/chat.html" target="_blank">/m1/stream 聊天界面 ↗</a>
+    <a href="/m1/stream?message=讲一个程序员的笑话" target="_blank" style="background:#9ca3af">原始 SSE（看协议）</a>
+</div>
+
+<div class="card">
+    <h3>模块 2 · Prompt 工程</h3>
+    <div class="desc">System Role + 占位符模板 + 外部 .st 文件，让 prompt 可独立维护。</div>
+    <a href="/m2/translate?text=Hello world&target=日语">/m2/translate</a>
+    <a href="javascript:fetch('/m2/review',{method:'POST',headers:{'Content-Type':'text/plain'},body:'public int add(int a,int b){return a+b;}'}).then(r=>r.text()).then(alert)">/m2/review (POST)</a>
+</div>
+
+<div class="card">
+    <h3>模块 3 · 多轮记忆</h3>
+    <div class="desc">ChatMemory + Advisor 自动维护对话历史，按 conversationId 隔离。</div>
+    <a href="/m3/chat?conversationId=u1&message=我叫小明">第 1 轮：自我介绍</a>
+    <a href="/m3/chat?conversationId=u1&message=我叫什么名字？">第 2 轮：考记忆</a>
+</div>
+
+<div class="card">
+    <h3>模块 4 · 结构化输出</h3>
+    <div class="desc">LLM 输出直接映射成 Java POJO，与现有业务代码打通。</div>
+    <a href="/m4/movie?title=星际穿越">/m4/movie (单对象)</a>
+    <a href="/m4/movies?genre=科幻&count=3">/m4/movies (列表)</a>
+</div>
+
+<div class="card">
+    <h3>模块 5 · 工具调用 (Function Calling)</h3>
+    <div class="desc">LLM 自主调用你的 Java 方法 —— 天气、计算器、时间。</div>
+    <a href="/m5/ask?message=北京今天多少度？">/m5/ask 查天气</a>
+    <a href="/m5/ask?message=北京气温乘以7是多少">/m5/ask 多工具协同</a>
+</div>
+
+<div class="card">
+    <h3>模块 6 · RAG 检索增强 <span class="badge">需要先 POST /m6/load</span></h3>
+    <div class="desc">本地 embedding + 向量库 + QuestionAnswerAdvisor 自动检索拼 prompt。</div>
+    <a href="javascript:fetch('/m6/load',{method:'POST'}).then(r=>r.text()).then(alert)">点击灌入示例文档</a>
+    <a href="/m6/ask?message=请假流程是什么？">/m6/ask 问 HR</a>
+    <a href="/m6/ask?message=线上P0故障怎么处理？">/m6/ask 问技术</a>
+</div>
+
+<div class="card">
+    <h3>模块 7 · ReAct Agent</h3>
+    <div class="desc">让模型按 Thought-Action-Observation 循环自主选择工具。</div>
+    <a href="/m7/run?task=查一下北京天气，再算这个温度乘以7">/m7/run 多步任务</a>
+</div>
+
+<div class="card">
+    <h3>模块 8 · Workflow 编排</h3>
+    <div class="desc">Chain / Parallel / Routing 三种典型工作流模式。</div>
+    <a href="/m8/chain?topic=红楼梦">/m8/chain 串行写作</a>
+    <a href="/m8/route?question=我的薪资怎么调整？">/m8/route 路由</a>
+</div>
+
+<p style="margin-top: 40px; color: #888; font-size: 13px;">
+    完整项目说明见 <code>README.md</code>。建议按 1 → 8 顺序学习，每模块大约 1-2 小时。
+</p>
+</body>
+</html>
