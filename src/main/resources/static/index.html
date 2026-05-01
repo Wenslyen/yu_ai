@@ -2,24 +2,54 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>yu_ai · Java → AI Agent 学习项目</title>
+    <title>yu_ai · Java → AI Agent 学习项目（Spring AI Alibaba）</title>
     <style>
         body { font-family: -apple-system, "PingFang SC", sans-serif; max-width: 880px; margin: 40px auto; padding: 0 20px; color: #222; line-height: 1.65; }
         h1 { border-bottom: 2px solid #2563eb; padding-bottom: 8px; }
-        .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; margin: 14px 0; background: #fafafa; }
+        .branch-banner { background: #fef3c7; color: #92400e; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin: 14px 0 24px; }
+        .branch-banner code { background: rgba(146,64,14,.1); padding: 1px 6px; border-radius: 3px; }
+
+        /* ===== 分组标题 ===== */
+        .section { display:flex; align-items:center; gap:10px; margin: 30px 0 10px; padding-top: 8px; }
+        .section h2 { margin: 0; font-size: 18px; }
+        .section .hint { color:#6b7280; font-size:13px; }
+
+        /* ===== 通用 (Spring AI) 卡片：蓝色系 ===== */
+        .card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; margin: 14px 0; background: #fafafa; border-left: 4px solid #2563eb; }
         .card h3 { margin: 0 0 8px 0; color: #2563eb; }
         .card .desc { color: #555; font-size: 14px; margin-bottom: 10px; }
         .card a { display: inline-block; margin: 4px 8px 4px 0; padding: 4px 10px; background: #2563eb; color: white; text-decoration: none; border-radius: 4px; font-size: 13px; font-family: ui-monospace, Menlo, monospace; }
         .card a:hover { background: #1d4ed8; }
-        .badge { display: inline-block; background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 8px; }
+
+        /* ===== Alibaba 专属卡片：橙色系（阿里品牌色） ===== */
+        .card.alibaba { border: 1px solid #fed7aa; background: #fff7ed; border-left: 4px solid #ea580c; }
+        .card.alibaba h3 { color: #c2410c; }
+        .card.alibaba a { background: #ea580c; }
+        .card.alibaba a:hover { background: #c2410c; }
+
+        /* ===== 角标 ===== */
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-left: 8px; vertical-align: middle; }
+        .badge-default { background: #fef3c7; color: #92400e; }
+        .badge-common  { background: #dbeafe; color: #1e3a8a; }
+        .badge-alibaba { background: #ea580c; color: #fff; }
     </style>
 </head>
 <body>
 <h1>yu_ai · Java → AI Agent 学习项目</h1>
-<p>基于 Spring AI + DeepSeek 的 8 个递进学习模块。点击下面的链接即可触发对应接口。</p>
+<p>基于 <strong>Spring AI Alibaba + 通义千问 (DashScope)</strong> 的 9 个递进学习模块。点击下面的链接即可触发对应接口。</p>
+<div class="branch-banner">
+    当前分支 <code>feature/spring-alibaba-ai</code> · 启动前请设置环境变量 <code>DASHSCOPE_API_KEY</code>
+    · <a href="https://dashscope.console.aliyun.com/apiKey" target="_blank" style="color:#92400e">前往 DashScope 申请 key ↗</a>
+</div>
+
+<!-- ============== 通用模块（Spring AI 标准 API） ============== -->
+<div class="section">
+    <h2><span class="badge badge-common">通用 · Spring AI</span> 模块 1 ~ 8</h2>
+    <span class="hint">业务代码与具体框架解耦，main 分支与本分支共享</span>
+</div>
 
 <div class="card">
-    <h3>模块 1 · 基础对话 <span class="badge">入门</span></h3>
+    <h3>模块 1 · 基础对话 <span class="badge badge-default">入门</span></h3>
     <div class="desc">ChatClient 同步 / 流式调用，类比 RestTemplate。</div>
     <a href="/m1/chat?message=你是谁">/m1/chat</a>
     <a href="/chat.html" target="_blank">/m1/stream 聊天界面 ↗</a>
@@ -55,8 +85,8 @@
 </div>
 
 <div class="card">
-    <h3>模块 6 · RAG 检索增强 <span class="badge">需要先 POST /m6/load</span></h3>
-    <div class="desc">本地 embedding + 向量库 + QuestionAnswerAdvisor 自动检索拼 prompt。</div>
+    <h3>模块 6 · RAG 检索增强 <span class="badge badge-default">需要先 POST /m6/load</span></h3>
+    <div class="desc">DashScope embedding + 向量库 + QuestionAnswerAdvisor 自动检索拼 prompt。</div>
     <a href="javascript:fetch('/m6/load',{method:'POST'}).then(r=>r.text()).then(alert)">点击灌入示例文档</a>
     <a href="/m6/ask?message=请假流程是什么？">/m6/ask 问 HR</a>
     <a href="/m6/ask?message=线上P0故障怎么处理？">/m6/ask 问技术</a>
@@ -75,8 +105,33 @@
     <a href="/m8/route?question=我的薪资怎么调整？">/m8/route 路由</a>
 </div>
 
+<!-- ============== Alibaba 专属（仅本分支独有） ============== -->
+<div class="section">
+    <h2><span class="badge badge-alibaba">阿里专属 · DashScope / Alibaba 生态</span> 模块 9</h2>
+    <span class="hint">本分支独有；切回 main 这部分会编译失败（依赖 spring-ai-alibaba）</span>
+</div>
+
+<div class="card alibaba">
+    <h3>模块 9.1 · 多模态看图（Qwen-VL）</h3>
+    <div class="desc">Qwen-VL-Plus 模型支持图像 + 文本输入，适合做 OCR、商品识别、图表解读。</div>
+    <a href="/m9/vision?imageUrl=https://dashscope.oss-cn-beijing.aliyuncs.com/images/dog_and_girl.jpeg&question=图里有什么">/m9/vision 看官方示例图</a>
+</div>
+
+<div class="card alibaba">
+    <h3>模块 9.2 · 联网搜索（DashScope EnableSearch）</h3>
+    <div class="desc">服务端开关，让模型自动联网获取实时信息，适合时效性问题。</div>
+    <a href="/m9/search?q=2025年图灵奖得主是谁">/m9/search 时效问题</a>
+    <a href="/m9/search?q=今天上证指数大概在哪里">/m9/search 实时数据</a>
+</div>
+
+<div class="card alibaba">
+    <h3>模块 9.3 · Nacos Prompt 热更新 <span class="badge badge-default">演示用，需自行接 Nacos</span></h3>
+    <div class="desc">Prompt 存 Nacos 配置中心，改完不重启就生效。当前为兜底实现，开启 Nacos 步骤见类注释。</div>
+    <a href="/m9/prompt?question=如何申请退款">/m9/prompt 客服问答</a>
+</div>
+
 <p style="margin-top: 40px; color: #888; font-size: 13px;">
-    完整项目说明见 <code>README.md</code>。建议按 1 → 8 顺序学习，每模块大约 1-2 小时。
+    完整项目说明见 <code>README.md</code>。建议按 1 → 9 顺序学习，每模块大约 1-2 小时。
 </p>
 </body>
 </html>

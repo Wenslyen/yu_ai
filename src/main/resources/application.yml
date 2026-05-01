@@ -13,24 +13,23 @@ spring:
     # 学习项目兜底：IDE 与 Maven 双 classpath 时可能扫到同名 @Bean，开启覆盖避免启动失败
     allow-bean-definition-overriding: true
   ai:
-    # ===== Chat 模型：使用 DeepSeek（OpenAI 兼容协议） =====
-    # 安全提醒：不要把真实 key 提交到 git，推荐用环境变量 DEEPSEEK_API_KEY 注入
-    openai:
-      api-key: ${DEEPSEEK_API_KEY:sk-请替换为你自己的key}
-      base-url: https://api.deepseek.com
+    # ===== Spring AI Alibaba · DashScope =====
+    # 安全提醒：不要把真实 key 提交到 git，推荐用环境变量 DASHSCOPE_API_KEY 注入
+    # 申请地址：https://dashscope.console.aliyun.com/apiKey
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:sk-请替换为你自己的key}
+      # ----- Chat 模型 -----
+      # 可选：qwen-max（最强）/ qwen-plus（推荐均衡）/ qwen-turbo（最便宜）/ qwen-long（超长上下文）
+      # 多模态见 module09 · MultimodalController
       chat:
         options:
-          model: deepseek-chat
+          model: qwen-plus
           temperature: 0.7
-      # DeepSeek 不提供 embedding，关闭 OpenAI 自动配置的 embedding，让本地 transformers 生效
+      # ----- Embedding 模型（RAG 用）-----
+      # text-embedding-v3 是 DashScope 当前最新通用 embedding 模型
       embedding:
-        enabled: false
-    # ===== Embedding 模型：本地 Transformers（ONNX, sentence-transformers） =====
-    # 启动时会下载 ~100MB 模型到本地缓存（首次较慢，之后离线可用）
-    transformers:
-      embedding:
-        cache:
-          directory: ${user.home}/.cache/spring-ai-transformers
+        options:
+          model: text-embedding-v3
     # ===== 向量库：用最简单的内存版 SimpleVectorStore，适合学习 =====
     vectorstore:
       type: simple

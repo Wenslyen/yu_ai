@@ -17,6 +17,7 @@
     <properties>
         <java.version>17</java.version>
         <spring-ai.version>1.0.0-M5</spring-ai.version>
+        <spring-ai-alibaba.version>1.0.0-M5.1</spring-ai-alibaba.version>
     </properties>
 
     <repositories>
@@ -41,16 +42,13 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
-        <!-- Spring AI: OpenAI 兼容 client（用来连 DeepSeek） -->
+        <!-- Spring AI Alibaba: 接入阿里云 DashScope（通义千问 全家桶 + DashScope embedding）
+             它是 Spring AI 之上的扩展，自动注入 ChatModel / EmbeddingModel / ChatClient.Builder，
+             所以模块 1-8 的业务代码完全无需改动。 -->
         <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
-        </dependency>
-
-        <!-- Spring AI: 本地 Transformers Embedding（不依赖外部 embedding API） -->
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-transformers-spring-boot-starter</artifactId>
+            <groupId>com.alibaba.cloud.ai</groupId>
+            <artifactId>spring-ai-alibaba-starter</artifactId>
+            <version>${spring-ai-alibaba.version}</version>
         </dependency>
 
         <!-- Spring AI: Tika 文档解析（PDF / DOCX / MD / HTML 都能读） -->

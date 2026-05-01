@@ -1,8 +1,11 @@
-# yu_ai · Java 工程师转型 AI Agent 学习项目
+# yu_ai · Java 工程师转型 AI Agent 学习项目（Spring AI Alibaba 版）
 
 > 一个面向**传统 Java/Spring 工程师**的、循序渐进的 AI Agent 学习项目。
-> 用主流框架 **Spring AI**（Java 生态最主流的 AI 框架，类比 LangChain）
-> 把 LLM 应用从「调一次接口」一路推进到「能用工具、会检索、有记忆、可编排的智能体」。
+> 用阿里在 Spring AI 之上扩展的 **Spring AI Alibaba**（接通通义千问 / DashScope 全家桶）
+> 把 LLM 应用从「调一次接口」一路推进到「能用工具、会检索、有记忆、可编排、能看图、会上网的智能体」。
+>
+> **当前分支**：`feature/spring-alibaba-ai`（C+ 方案）
+> **对应 main 分支**：使用原生 Spring AI + DeepSeek（OpenAI 兼容协议）
 
 ---
 
@@ -24,16 +27,23 @@
 
 ## 2. 技术选型
 
-| 维度        | 选型                                            | 备注                                                                |
-| ----------- | ----------------------------------------------- | ------------------------------------------------------------------- |
-| 语言/构建   | Java 17 + Maven                                 | Spring Boot 3.x 标配                                                |
-| 框架        | **Spring Boot 3.4 + Spring AI 1.0.0-M5**        | Java 生态最主流 AI 框架，对 Spring 用户零学习成本                   |
-| 模型 (Chat) | DeepSeek（OpenAI 兼容）                         | 国内可用、便宜、效果不错；切其它模型只改 `application.yml`          |
-| Embedding   | 本地 Transformers (ONNX, sentence-transformers) | RAG 用，不依赖外部 embedding API，开箱即用                          |
-| 向量库      | `SimpleVectorStore`（内存）                     | 学习用最轻量；生产可换 PgVector / Milvus / Redis Stack              |
-| Web         | Spring MVC + WebFlux（流式）                    | 演示同步与 SSE 流式两种返回                                         |
+| 维度        | 选型                                                                | 备注                                                                                |
+| ----------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 语言/构建   | Java 17 + Maven                                                     | Spring Boot 3.x 标配                                                                |
+| 框架        | **Spring Boot 3.4 + Spring AI 1.0.0-M5 + Spring AI Alibaba 1.0.0-M5.1** | Spring AI Alibaba 是 Spring AI 之上的阿里扩展，反向兼容；模块 1-8 全部走通用 API |
+| 模型 (Chat) | 通义千问 Qwen-Plus (DashScope)                                      | 一行 yml 切到 qwen-max / qwen-turbo / qwen-long；默认 qwen-plus 性价比最高          |
+| 多模态      | Qwen-VL-Plus                                                        | 模块 9 用，仅在用到时切换，不影响其他模块                                           |
+| Embedding   | DashScope `text-embedding-v3`                                       | 比本地 transformers 效果好，无 ~100MB 模型下载                                      |
+| 向量库      | `SimpleVectorStore`（内存）                                         | 学习用最轻量；生产可换 PgVector / Milvus / Redis Stack                              |
+| Web         | Spring MVC + WebFlux（流式）                                        | 演示同步与 SSE 流式两种返回                                                         |
 
-> 为什么用 Spring AI 而不是 LangChain4j？两者都很好，Spring AI 与 Spring Boot 集成最深、文档最齐、Advisor 体系直接对应「Agent 拦截链」概念，更适合 Spring 老兵入门。学完本项目，再迁到 LangChain4j 几乎是无缝的。
+> **为什么是 Spring AI Alibaba 而不是 Spring AI + 自己拼？**
+> Spring AI Alibaba 是**超集**而不是替代品：核心 ChatClient / Advisor / VectorStore API 完全沿用 Spring AI，业务代码可在两者间无缝迁移。它额外提供了：
+> 1. **DashScope 原生集成**（多模态、联网搜索、超长上下文）—— 对应 module09
+> 2. **Nacos prompt 热更新**（生产真实需求，不重启改 prompt）
+> 3. **Higress 网关 / ARMS 可观测**（企业级运维栈）
+>
+> 学完后切 LangChain4j、Spring AI 原生、甚至自研框架都几乎无缝。
 
 ---
 
@@ -82,6 +92,7 @@ yu_ai/
 │   ├── module06_rag/                    # 模块 6：RAG 检索增强
 │   ├── module07_agent/                  # 模块 7：ReAct Agent（自主智能体）
 │   ├── module08_workflow/               # 模块 8：Workflow 编排（链/并行/路由）
+│   ├── module09_alibaba_ext/            # 模块 9：Spring AI Alibaba 独门绝技（多模态 + 联网 + Nacos prompt）
 │   └── controller/                      # 旧版 demo 保留（基础 Controller 例子）
 ├── src/main/resources/
 │   ├── application.yml
@@ -102,6 +113,7 @@ yu_ai/
 | 6   | **rag**         | 让 LLM 「带着资料」回答                               | EmbeddingModel、`SimpleVectorStore`、`QuestionAnswerAdvisor`、文档切分                                            |
 | 7   | **agent**       | LLM 自主选择「思考-行动-观察」循环                    | ReAct 模式（Reason + Act），用 prompt + tools 自己组合一个最小 Agent                                              |
 | 8   | **workflow**    | 多步骤、多角色协同                                    | Chain（串行）/ Parallel（并行）/ Routing（路由）三种典型编排，对应 Anthropic 官方"building effective agents"     |
+| 9   | **alibaba_ext** | 阿里生态独家能力                                      | Qwen-VL 多模态看图、DashScope 联网搜索、Nacos prompt 热更新（API 演示）                                           |
 
 > 学习顺序就是**模块顺序**，每模块都能独立运行，互不依赖，递进关系如下：
 >
@@ -120,15 +132,15 @@ cd yu_ai
 
 ### 5.2 配置 API Key
 
-把 `application.yml` 里的 key **改成自己的**或注入环境变量：
-```yaml
-spring:
-  ai:
-    openai:
-      api-key: ${DEEPSEEK_API_KEY:你的key}
-      base-url: https://api.deepseek.com
+[阿里云 DashScope 控制台](https://dashscope.console.aliyun.com/apiKey) 申请 `sk-xxx` key，然后**用环境变量注入**（不要写进 yml 提交）：
+
+```bash
+export DASHSCOPE_API_KEY=sk-你的key
 ```
-推荐用环境变量，不要把 key 提交到 git（**当前 application.yml 里的 key 已经泄露过，建议立刻去 DeepSeek 控制台 revoke**）。
+
+或在 IDEA Run Configuration → Environment variables 里加 `DASHSCOPE_API_KEY=sk-...`。
+
+`application.yml` 里保留 `${DASHSCOPE_API_KEY:...}` 占位符，**永远不要把真实 key 写进 yml 并提交到 git**。
 
 ### 5.3 跑起来
 ```bash
@@ -149,6 +161,9 @@ spring:
 | RAG          | 先 `POST /m6/load` 灌入文档，再 `/m6/ask?message=请假流程是什么？`   |
 | ReAct Agent  | `/m7/run?task=查一下北京天气，再帮我算 32×7`                         |
 | Workflow     | `/m8/chain?topic=红楼梦`、`/m8/route?question=...`                   |
+| 多模态看图   | `/m9/vision?imageUrl=https://...&question=图里有什么`                |
+| 联网搜索     | `/m9/search?q=2025年图灵奖得主是谁`                                  |
+| Nacos prompt | `/m9/prompt?question=如何申请退款`（默认配置兜底；接 Nacos 见类注释）|
 
 ---
 
